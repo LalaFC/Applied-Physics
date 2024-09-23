@@ -1,7 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TrajectoryGuide : MonoBehaviour
+
+public class Trajectory : MonoBehaviour
 {
     private Rigidbody rb;
     [SerializeField] private GameObject target;
@@ -29,22 +30,21 @@ public class TrajectoryGuide : MonoBehaviour
             //From distance = change in velocity/time; change in velocity = (final-initial)/2
             //initial velocity = 0;
             GetTime();
-            horizontalVelX = ((2*(getDistancePerAxis('x') * TotalTime)));
+            horizontalVelX = ((2 * (getDistancePerAxis('x') * TotalTime)));
 
-            horizontalVelZ = ((2*(getDistancePerAxis('z') * TotalTime)));
+            horizontalVelZ = ((2 * (getDistancePerAxis('z') * TotalTime)));
 
             rb.velocity = new Vector3(horizontalVelX, verticalVel, horizontalVelZ);
         }
 
-        else if(Input.GetKeyDown(KeyCode.C)) 
+        else if (Input.GetKeyDown(KeyCode.C))
         {
             SetDirection();
             float hypotenuse = (target.transform.position - transform.position).magnitude;
 
-            verticalVel = Mathf.Sqrt(2 * Physics.gravity.magnitude * (Mathf.Sin(angle)*hypotenuse));
+            verticalVel = Mathf.Sqrt(2 * Physics.gravity.magnitude * ((Mathf.Sin(angle) * hypotenuse)));
 
-            Debug.Log((Mathf.Sin(angle)) +"\n"+hypotenuse + "\n" +direction +"\n" + angle);
-            Debug.Log(Mathf.Sqrt(2 * Physics.gravity.magnitude * (Mathf.Sin(angle) * hypotenuse)));
+            Debug.Log((Mathf.Sin(angle)) + "\n" + hypotenuse + "\n" + direction);
 
             GetTime();
             horizontalVelX = ((2 * (Mathf.Cos(angle) * hypotenuse) * direction.x * TotalTime));
@@ -64,18 +64,18 @@ public class TrajectoryGuide : MonoBehaviour
     {
         switch (axis)
         {
-            case'x':
+            case 'x':
                 return target.transform.position.x - transform.position.x;
-                
+
             case 'y':
                 return target.transform.position.y - transform.position.y;
-                
+
             case 'z':
                 return target.transform.position.z - transform.position.z;
-                
+
             default:
                 return 0;
-                
+
         }
     }
     void GetTime()

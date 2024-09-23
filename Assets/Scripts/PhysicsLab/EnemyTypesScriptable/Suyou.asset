@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyPrefab: {fileID: 5712410097757391350, guid: 6f8ba2e9f2ed89d4fa4db7fcd6f476ff, type: 3}
   name: Suyou
-  attackPower: 0
-  defense: 0
-  health: 0
-  speed: 0
+  attackPower: 25
+  defense: 5
+  health: 40
+  speed: 10
   position: {x: 9, y: 0, z: 5}

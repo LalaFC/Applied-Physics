@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Spawner : MonoBehaviour
@@ -13,6 +14,7 @@ public class Spawner : MonoBehaviour
         {
             EnemyType chosenType = m_EnemyTypes[typeIndex];
             Instantiate(chosenType.enemyPrefab, chosenType.position, Quaternion.identity);
+            chosenType.enemyPrefab.GetComponentInChildren<CharacterStats>().SetStats(chosenType.health, chosenType.attackPower, chosenType.defense, chosenType.speed);
             typeIndex += 1;
         }
     }

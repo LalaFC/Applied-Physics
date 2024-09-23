@@ -5,10 +5,10 @@ using UnityEngine;
 
 public class CharacterStats : MonoBehaviour
 {
-    private float health;
-    private float atkPower;
-    private float defense;
-    private float speed;
+    [SerializeField] private float health;
+    [SerializeField] private float atkPower;
+    [SerializeField] private float defense;
+    [SerializeField] private float speed;
 
     public void SetStats(float hp, float atkPt, float def, float spd)
     {
@@ -16,5 +16,6 @@ public class CharacterStats : MonoBehaviour
         atkPower = atkPt;
         defense = def;
         speed = spd;
+        Debug.Log("Stats changed.");
     }
 }
