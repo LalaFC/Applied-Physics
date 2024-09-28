@@ -82,7 +82,8 @@ public class AimingMechExp : MonoBehaviour
     {
         reload = true;
         rb.velocity = Vector3.zero;
-        rb.isKinematic = false;
+        rb.isKinematic = true;
+        rb.constraints = RigidbodyConstraints.None;
         transform.GetChild(0).gameObject.SetActive(false);
         yield return new WaitForSeconds(2f);
         transform.localScale = Vector3.zero;
