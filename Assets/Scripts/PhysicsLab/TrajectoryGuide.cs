@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,11 +8,12 @@ public class TrajectoryGuide : MonoBehaviour
     private Rigidbody rb;
     [SerializeField] private GameObject target;
     [SerializeField] private Slider vertAngleSlider;
+    [SerializeField] private float speed, accSpd, decSpd;
 
     [SerializeField] private float horizontalVelX, horizontalVelZ, verticalVel, TotalTime, angle;
     private Vector3 direction;
     private float initAngle;
-    bool canLaunch=true;
+    bool canLaunch=true, isMoving = false, isAcc = false, isDec = false;
     Vector3 initPos;
 
     // Start is called before the first frame update
@@ -22,24 +24,42 @@ public class TrajectoryGuide : MonoBehaviour
         vertAngleSlider.value = initAngle;
         initPos = transform.position;
     }
-
-    // Update is called once per frame
-    void FixedUpdate()
+    private void Update()
     {
-        if(canLaunch)
-        StartCoroutine(Launch());
-        if (Input.GetKey(KeyCode.Backspace))
+
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            if (!isMoving)
+                isMoving = true;
+            else isMoving = false;
+
+        }
+        else if (Input.GetKey(KeyCode.W))
+        {
+            rb.AddForce(0, 0, accSpd, ForceMode.Acceleration);
+        }
+        else if (Input.GetKeyDown(KeyCode.E))
+            rb.AddForce(0, 0, -decSpd, ForceMode.Acceleration);
+
+        else if (Input.GetKey(KeyCode.Backspace))
         {
             rb.velocity = Vector3.zero;
             transform.position = initPos;
             canLaunch = true;
         }
+        else if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            speed = -speed;
+            accSpd = -accSpd;
+            decSpd = -decSpd;
+        }
 
     }
-    IEnumerator Launch()
+
+    // Update is called once per frame
+    void FixedUpdate()
     {
-        canLaunch = false;
-        if (Input.GetKeyDown(KeyCode.F))
+        if (Input.GetKeyDown(KeyCode.F) && canLaunch)
         {
             SetDirection(target.transform.position, transform.position);
             //Upward velocity = sqrt of 2*g*h
@@ -52,9 +72,10 @@ public class TrajectoryGuide : MonoBehaviour
             horizontalVelZ = ((2 * (getDistancePerAxis('z') * TotalTime)));
 
             rb.velocity = new Vector3(horizontalVelX, verticalVel, horizontalVelZ);
+            StartCoroutine(Launch());
         }
 
-        else if (Input.GetKeyDown(KeyCode.G))
+        else if (Input.GetKeyDown(KeyCode.G) && canLaunch)
         {
             Debug.Log(getDistancePerAxis('x') + " + " + getDistancePerAxis('y'));
             //Adds slider value to default angle;
@@ -78,11 +99,13 @@ public class TrajectoryGuide : MonoBehaviour
 
             rb.velocity = new Vector3(horizontalVelX, verticalVel, horizontalVelZ);
             Debug.Log("NewAngle = " + NewAngle * (180 / Mathf.PI) + "\nMax Height = " + MaxHeight + "\nFall Height = " + fallHeight + "\nTime of Flight = " + TotalTime
-    + "\nvelocity = " + new Vector3(horizontalVelX, verticalVel, horizontalVelZ));
+            + "\nvelocity = " + new Vector3(horizontalVelX, verticalVel, horizontalVelZ));
+            Debug.Log((Mathf.Atan(Mathf.Abs(getDistancePerAxis('y') / getDistancePerAxis('x'))) * (180 / Mathf.PI)));
+            StartCoroutine(Launch());
 
         }
 
-        else if (Input.GetKeyDown(KeyCode.C))
+        else if (Input.GetKeyDown(KeyCode.C) && canLaunch)
         {
             SetDirection(target.transform.position, transform.position);
             float hypotenuse = (target.transform.position - transform.position).magnitude;
@@ -100,7 +123,19 @@ public class TrajectoryGuide : MonoBehaviour
 
 
             rb.velocity = new Vector3(horizontalVelX, verticalVel, horizontalVelZ);
+            StartCoroutine(Launch());
         }
+
+        if (isMoving)
+        {
+            rb.velocity = (Vector3.forward * speed);
+            isMoving = false;
+        }
+
+    }
+    IEnumerator Launch()
+    {
+        canLaunch = false;
         yield return new WaitForSeconds(0.2f);
         canLaunch = true;
     }
@@ -137,6 +172,11 @@ public class TrajectoryGuide : MonoBehaviour
     public void ChangeAngle()
     {
         angle = vertAngleSlider.value * (Mathf.PI / 180);
+    }
+    [SerializeField]TextMeshProUGUI degreesLbl;
+    public void ChangeDegLabel()
+    {
+        degreesLbl.text = "Angle\nDegrees: "+vertAngleSlider.value;
     }
 
 }
