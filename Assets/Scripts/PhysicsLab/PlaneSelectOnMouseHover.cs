@@ -18,6 +18,10 @@ public class PlaneSelectOnMouseHover : MonoBehaviour
                 hitMat.SetColor("_EmissionColor", Color.gray * 0.5f);
                 previous = hit.transform;
             }
+            if (Input.GetMouseButtonDown(0) && hit.transform != null)
+            {
+                hit.transform.GetComponent<TowerSpawner>().SpawnTower();
+            }
         }
     }
 }
